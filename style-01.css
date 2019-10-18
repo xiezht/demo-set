@@ -1,0 +1,8 @@
+@font-face {
+  font-family: "MILan_Pro";
+  src: url("./fonts/min/MILanPro_Bold-61e1488847.ttf");
+}
+
+h1 {
+  font-family: 'MILan_Pro', Arial, Helvetica, sans-serif;
+}
