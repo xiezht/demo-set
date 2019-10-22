@@ -1,1 +1,3 @@
-# test-cloud
+# demo-set
+
+A set of demos.
