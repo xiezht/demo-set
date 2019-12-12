@@ -15,9 +15,9 @@ function createWindow() {
     }
   })
   mainWin.loadFile('index.html')
-  mainWin.setMenu(Menu.buildFromTemplate(menuTemplate))
+  // mainWin.setMenu(Menu.buildFromTemplate(menuTemplate))
   // mainWin.excludedFromShownWindowsMenu = true
-  // Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate))
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate))
   // mainWin.webContents.openDevTools()
   mainWin.on('closed', () => {
     mainWin = null
