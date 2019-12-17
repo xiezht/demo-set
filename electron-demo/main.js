@@ -1,49 +1,66 @@
-const { app, globalShortcut, ipcMain, BrowserWindow, Menu } = require('electron')
+const fs = require('fs')
+const { app, dialog, BrowserWindow } = require('electron')
 const isMac = process.platform === 'darwin'
 
-const menuTemplate = require('./menu-template.js')
+const windows = new Set()
 
-let mainWin = null
+// 创建新窗口
+const createWindow = exports.createWindow = () => {
+  let x = 0
+  let y = 0
+  const currentWindow = BrowserWindow.getFocusedWindow()
+  if (currentWindow) {
+    const { currentWindowX, currentWindowY } = currentWindow.getPosition()
+    x = currentWindowX + 10
+    y = currentWindowY + 10
+  }
 
-function createWindow() {
-  mainWin = new BrowserWindow({
-    width: 800,
-    height: 600,
-    // frame: false,
+  let newWindow = new BrowserWindow({
+    show: false, x, y,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: true
     }
   })
-  mainWin.loadFile('index.html')
-  // mainWin.setMenu(Menu.buildFromTemplate(menuTemplate))
-  // mainWin.excludedFromShownWindowsMenu = true
-  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate))
-  // mainWin.webContents.openDevTools()
-  mainWin.on('closed', () => {
-    mainWin = null
+  newWindow.loadFile('./index.html')
+  // window加载完成后再显示窗口
+  newWindow.once('ready-to-show', () => {
+    newWindow.show();
   })
+  newWindow.on('closed', () => {
+    windows.delete(newWindow)
+    newWindow = null
+  })
+  windows.add(newWindow)
+  return newWindow
 }
 
-
-function listenMsg() {
- ipcMain.on('async-msg', (event, arg) => {
-   console.log('async-comming', arg)
-   event.sender.send('async-reply', 'aysnc-pong')
- })
- ipcMain.on('sync-msg', (event, arg) => {
-   console.log('sync-comming', arg)
-   event.returnValue = "pong"
- })
+// 弹窗，选择文件，获取文件名
+const getFileFromUser = exports.getFileFromUser = (targetWindow) => {
+  const files = dialog.showOpenDialogSync(targetWindow, {
+    properties: ['openFile'],
+    filters: [
+      { name: 'Text Files', extensions: ['txt']},
+      { name: 'Markdown Files', extensions: ['md', 'markdown'] }
+    ]
+  })
+  if (files) openFile(targetWindow, files[0])
 }
 
+// 打开文件，并将文件内容回传回渲染进程
+const openFile = exports.openFile = (targetWindow, file) => {
+  const content = fs.writeFileSync(file).toString()
+  targetWindow.webContents.send('file-opened', file, content)
+}
+
+// app启动成功
 app.on('ready', () => {
   createWindow()
-  // listenMsg()
-  // globalShortcut.register('Control+R', () =>{
-  //   mainWin.reload()
-  // })
 })
 
 app.on('window-all-closed', () => {
-  app.quit()
+  if(isMac) return false
+})
+
+app.on('activate', (event, hasVisibleWindows) => {
+  if (!hasVisibleWindows) createWindow()
 })

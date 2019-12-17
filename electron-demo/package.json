@@ -4,12 +4,15 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron . --disable-gpu",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "electron": "^6.1.5"
+  },
+  "dependencies": {
+    "marked": "^0.8.0"
   }
 }
