@@ -27,7 +27,7 @@ const createWindow = exports.createWindow = () => {
   // window加载完成后再显示窗口
   newWindow.once('ready-to-show', () => {
     newWindow.show()
-    newWindow.webContents.openDevTools()
+    // newWindow.webContents.openDevTools()
   })
   newWindow.on('closed', () => {
     windows.delete(newWindow)
