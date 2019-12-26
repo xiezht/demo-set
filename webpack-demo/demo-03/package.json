@@ -1,0 +1,12 @@
+{
+  "name": "demo-03",
+  "version": "1.0.0",
+  "description": "* file-loader",
+  "main": "file-loader.js",
+  "scripts": {
+    "build:dev": "npx webpack --env.development",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
