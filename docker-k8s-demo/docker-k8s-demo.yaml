@@ -1,0 +1,19 @@
+# file 构建k8s pod资源
+
+# apiVersion 使用的k8s版本
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demo
+  # Pod资源的标签，分类作用
+  labels:
+    creation_method: manual
+    env: dev
+spec:
+  containers:
+  - image: xiezht/docker-and-k8s-demo:1.0.1
+    name: node-demo
+    ports:
+    # 纯展示性作用
+    - containerPort: 8080
+      protocol: TCP
